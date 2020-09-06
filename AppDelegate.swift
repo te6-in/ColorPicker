@@ -84,11 +84,18 @@ extension Color {
 
 let getHotKey = HotKey(key: .g, modifiers: [.command, .option])
 let copyHotKey = HotKey(key: .c, modifiers: [.command, .option])
+let closeHotKey = HotKey(key: .w, modifiers: .command)
+
 let pasteboard = NSPasteboard.general
+let colorCode = PickedColor()
 
 @NSApplicationMain class AppDelegate: NSObject, NSApplicationDelegate {
 
 	var window: NSWindow!
+	
+	func applicationWillFinishLaunching(_ notification: Notification) {
+		colorCode.color = getColor()
+	}
 	
 	func applicationDidFinishLaunching(_ aNotification: Notification) {
 		// Create the SwiftUI view that provides the window contents.
@@ -101,7 +108,6 @@ let pasteboard = NSPasteboard.general
 			backing: .buffered, defer: false)
 		window.center()
 		
-		let colorCode = PickedColor()
 		window.contentView = NSHostingView(rootView: contentView.environmentObject(colorCode))
 		
 		window.makeKeyAndOrderFront(nil)
@@ -111,13 +117,15 @@ let pasteboard = NSPasteboard.general
 		window.backgroundColor = .clear
 		window.appearance = NSAppearance(named: .aqua)
 		
-		
 		getHotKey.keyDownHandler = {
 			colorCode.color = getColor()
 		}
 		copyHotKey.keyDownHandler = {
 			pasteboard.declareTypes([.string], owner: nil)
 			pasteboard.setString(convertNSColorToHex(color: colorCode.color), forType: .string)
+		}
+		closeHotKey.keyDownHandler = {
+			closeApp()
 		}
 	}
 

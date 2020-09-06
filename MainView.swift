@@ -11,7 +11,7 @@ import AppKit
 import CoreGraphics
 
 extension NSImage {
-    func tinting(with tintColor: NSColor) -> NSImage {
+    func tint(with tintColor: NSColor) -> NSImage {
         guard let cgImage = self.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return self }
         
         return NSImage(size: size, flipped: false) { bounds in
@@ -25,7 +25,7 @@ extension NSImage {
 }
 
 class PickedColor: ObservableObject {
-	@Published var color: NSColor = #colorLiteral(red: 0.317293094, green: 0.7423107362, blue: 0.8786026554, alpha: 1) //default
+	@Published var color: NSColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 }
 
 struct MainView: View {
@@ -80,7 +80,7 @@ struct MainView: View {
 						.foregroundColor(.white)
 						.frame(width:58, height:58)
 						//.shadow 추가할 것
-					Image(nsImage: #imageLiteral(resourceName: "icn_copy").tinting(with: self.pickedColor.color))
+					Image(nsImage: #imageLiteral(resourceName: "icn_copy").tint(with: self.pickedColor.color))
 				}
 			}
 			.buttonStyle(PlainButtonStyle())
