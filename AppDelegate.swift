@@ -9,6 +9,7 @@
 import SwiftUI
 import HotKey
 
+// Hex String to Color
 extension Color {
     init(hex string: String) {
         var string: String = string.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
@@ -100,7 +101,7 @@ let pasteboard = NSPasteboard.general
 			backing: .buffered, defer: false)
 		window.center()
 		
-		let colorCode = ColorCode()
+		let colorCode = PickedColor()
 		window.contentView = NSHostingView(rootView: contentView.environmentObject(colorCode))
 		
 		window.makeKeyAndOrderFront(nil)
@@ -112,11 +113,11 @@ let pasteboard = NSPasteboard.general
 		
 		
 		getHotKey.keyDownHandler = {
-			colorCode.string = getColor()
+			colorCode.color = getColor()
 		}
 		copyHotKey.keyDownHandler = {
 			pasteboard.declareTypes([.string], owner: nil)
-			pasteboard.setString(colorCode.string, forType: .string)
+			pasteboard.setString(convertNSColorToHex(color: colorCode.color), forType: .string)
 		}
 	}
 

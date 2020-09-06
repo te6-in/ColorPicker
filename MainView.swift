@@ -10,13 +10,27 @@ import SwiftUI
 import AppKit
 import CoreGraphics
 
-class ColorCode: ObservableObject {
-	@Published var string = "123456"
+extension NSImage {
+    func tinting(with tintColor: NSColor) -> NSImage {
+        guard let cgImage = self.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return self }
+        
+        return NSImage(size: size, flipped: false) { bounds in
+            guard let context = NSGraphicsContext.current?.cgContext else { return false }
+            tintColor.set()
+            context.clip(to: bounds, mask: cgImage)
+            context.fill(bounds)
+            return true
+        }
+    }
+}
+
+class PickedColor: ObservableObject {
+	@Published var color: NSColor = #colorLiteral(red: 0.317293094, green: 0.7423107362, blue: 0.8786026554, alpha: 1) //default
 }
 
 struct MainView: View {
 	
-	@EnvironmentObject var colorCode: ColorCode
+	@EnvironmentObject var pickedColor: PickedColor
 	
 	var body: some View {
 		ZStack(alignment: .bottomTrailing) {
@@ -26,23 +40,21 @@ struct MainView: View {
 					.opacity(0)
 					.zIndex(0)
 				ZStack(alignment: .topLeading) {
-					Text(self.colorCode.string)
+					Text(convertNSColorToHex(color: pickedColor.color))
 						.font(.largeTitle)
 						.fontWeight(.semibold)
 						.multilineTextAlignment(.center)
 						.frame(width: 250, height: 180)
 						.foregroundColor(.white)
 						.zIndex(2)
-						.environmentObject(colorCode)
 					Image(nsImage: #imageLiteral(resourceName: "Shape"))
 						.zIndex(3)
 					ZStack(alignment: .topTrailing) {
 						ZStack(alignment: .bottomLeading) {
 							RoundedRectangle(cornerRadius: 10)
 								.frame(width: 250, height: 180)
-								.foregroundColor(Color(hex: self.colorCode.string))
+								.foregroundColor(Color(pickedColor.color))
 								.zIndex(1)
-								.environmentObject(colorCode)
 							Button(action: showMoreMenu) {
 								Image(nsImage: #imageLiteral(resourceName: "btn_more"))
 							}
@@ -61,14 +73,14 @@ struct MainView: View {
 			}
 			Button(action: {
 				pasteboard.declareTypes([.string], owner: nil)
-				pasteboard.setString(self.colorCode.string, forType: .string)
+				pasteboard.setString(convertNSColorToHex(color: self.pickedColor.color), forType: .string)
 			}) {
 				ZStack {
 					RoundedRectangle(cornerRadius: 29)
 						.foregroundColor(.white)
 						.frame(width:58, height:58)
-					//.shadow 추가할 것
-					Image(nsImage: #imageLiteral(resourceName: "icn_copy"))
+						//.shadow 추가할 것
+					Image(nsImage: #imageLiteral(resourceName: "icn_copy").tinting(with: self.pickedColor.color))
 				}
 			}
 			.buttonStyle(PlainButtonStyle())
@@ -77,34 +89,35 @@ struct MainView: View {
 	}
 }
 
-func getColor() -> String {
+func getColor() -> NSColor {
 	var mouseLocation: NSPoint { NSEvent.mouseLocation }
 	
-	var color: NSColor?
+	var color: NSColor
 	
 	let x: CGFloat = floor(mouseLocation.x)
 	let y: CGFloat = (NSScreen.main!.frame.size.height) - floor(mouseLocation.y)
 	
-	let pixel: CGImage = CGWindowListCreateImage(CGRect(x: x, y: y, width: 1, height: 1),
-												 .optionAll,
-												 kCGNullWindowID,
-												 .nominalResolution)!
-	
+	let pixel: CGImage = CGWindowListCreateImage(CGRect(x: x, y: y, width: 1, height: 1), .optionAll, kCGNullWindowID, .nominalResolution)!
 	
 	let bitmap = NSBitmapImageRep(cgImage: pixel)
 	bitmap.colorSpaceName = NSColorSpaceName.deviceRGB
-	color = bitmap.colorAt(x: 0, y: 0)
+	color = bitmap.colorAt(x: 0, y: 0)!
 	
+	return color
+}
+
+// NSColor to Hex String
+func convertNSColorToHex(color: NSColor) -> String {
 	var r: CGFloat = 0
 	var g: CGFloat = 0
 	var b: CGFloat = 0
 	var a: CGFloat = 0
 	
-	color?.getRed(&r, green: &g, blue: &b, alpha: &a)
+	color.getRed(&r, green: &g, blue: &b, alpha: &a)
 	
-	let hexColor = String(format: "%02X%02X%02X", Int(r * 0xff), Int(g * 0xff), Int(b * 0xff))
+	let hexString = String(format: "%02X%02X%02X", Int(r * 0xff), Int(g * 0xff), Int(b * 0xff))
 	
-	return hexColor
+	return hexString
 }
 
 func closeApp() {
@@ -118,6 +131,6 @@ func showMoreMenu() {
 
 struct ContentView_Previews: PreviewProvider {
 	static var previews: some View {
-		MainView().environmentObject(ColorCode())
+		MainView().environmentObject(PickedColor())
 	}
 }
