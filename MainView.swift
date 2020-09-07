@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  MainView.swift
 //  ColorPicker2
 //
 //  Created by 찬휘 on 9. 3..
@@ -7,8 +7,6 @@
 //
 
 import SwiftUI
-import AppKit
-import CoreGraphics
 
 extension NSImage {
     func tint(with tintColor: NSColor) -> NSImage {
@@ -28,63 +26,139 @@ class PickedColor: ObservableObject {
 	@Published var color: NSColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 }
 
+class Saved9Colors: ObservableObject {
+	@Published var colors: [NSColor] = [#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)]
+}
+
+struct SavedSingleColor: View {
+	var num: Int
+	var color: NSColor
+	var body: some View {
+		Button(action: { copySavedColor(num: self.num) }) {
+			ZStack {
+				RoundedRectangle(cornerRadius: 10, style: .continuous)
+					.frame(width: 32, height: 32)
+					.foregroundColor(Color(color).opacity(0.35))
+					.zIndex(1)
+				RoundedRectangle(cornerRadius: 7, style: .continuous)
+					.frame(width: 26, height: 26)
+					.foregroundColor(Color(color))
+					.zIndex(2)
+			}
+		}
+		.buttonStyle(PlainButtonStyle())
+	}
+}
+
+struct SavedColorsView: View {
+	
+	@EnvironmentObject var saved9Colors: Saved9Colors
+	
+	var body: some View {
+		ZStack {
+			HStack(spacing: 0) {
+				Rectangle()
+					.frame(width: 9, height: 72)
+					.opacity(0)
+				VStack(spacing: 8) {
+					HStack(spacing: 8) {
+						SavedSingleColor(num: 1, color: saved9Colors.colors[0])
+						SavedSingleColor(num: 2, color: saved9Colors.colors[1])
+						SavedSingleColor(num: 3, color: saved9Colors.colors[2])
+						SavedSingleColor(num: 4, color: saved9Colors.colors[3])
+						SavedSingleColor(num: 5, color: saved9Colors.colors[4])
+					}
+					HStack(spacing: 8) {
+						SavedSingleColor(num: 6, color: saved9Colors.colors[5])
+						SavedSingleColor(num: 7, color: saved9Colors.colors[6])
+						SavedSingleColor(num: 8, color: saved9Colors.colors[7])
+						SavedSingleColor(num: 9, color: saved9Colors.colors[8])
+						Button(action: showMoreColors) {
+							ZStack {
+								RoundedRectangle(cornerRadius: 10, style: .continuous)
+									.frame(width: 32, height: 32)
+									.foregroundColor(Color(.black))
+									.zIndex(1)
+									.opacity(0.65)
+								Image(nsImage: #imageLiteral(resourceName: "icn_more"))
+									.opacity(0.9)
+							}
+						}
+					.buttonStyle(PlainButtonStyle())
+					}
+				}
+			}
+		}
+	}
+}
+
+struct CopyButtonView: View {
+	@EnvironmentObject var pickedColor: PickedColor
+	var body: some View {
+		Button(action: {
+			pasteboard.declareTypes([.string], owner: nil)
+			pasteboard.setString(convertNSColorToHex(color: self.pickedColor.color), forType: .string)
+		}) {
+			ZStack {
+				RoundedRectangle(cornerRadius: 29)
+					.foregroundColor(.white)
+					.frame(width:58, height:58)
+					//.shadow 추가할 것
+				Image(nsImage: #imageLiteral(resourceName: "icn_copy").tint(with: self.pickedColor.color))
+			}
+		}
+		.buttonStyle(PlainButtonStyle())
+		.zIndex(999)
+	}
+}
+
 struct MainView: View {
 	
 	@EnvironmentObject var pickedColor: PickedColor
 	
 	var body: some View {
-		ZStack(alignment: .bottomTrailing) {
-			ZStack(alignment: .topLeading) {
-				Rectangle()
-					.frame(width: 258, height: 188)
-					.opacity(0)
-					.zIndex(0)
+		VStack(alignment: .leading, spacing: 4) {
+			ZStack(alignment: .bottomTrailing) {
 				ZStack(alignment: .topLeading) {
-					Text(convertNSColorToHex(color: pickedColor.color))
-						.font(.largeTitle)
-						.fontWeight(.semibold)
-						.multilineTextAlignment(.center)
-						.frame(width: 250, height: 180)
-						.foregroundColor(.white)
-						.zIndex(2)
-					Image(nsImage: #imageLiteral(resourceName: "Shape"))
-						.zIndex(3)
-					ZStack(alignment: .topTrailing) {
-						ZStack(alignment: .bottomLeading) {
-							RoundedRectangle(cornerRadius: 10)
-								.frame(width: 250, height: 180)
-								.foregroundColor(Color(pickedColor.color))
-								.zIndex(1)
-							Button(action: showMoreMenu) {
-								Image(nsImage: #imageLiteral(resourceName: "btn_more"))
+					Rectangle()
+						.frame(width: 258, height: 188)
+						.opacity(0)
+						.zIndex(0)
+					ZStack(alignment: .topLeading) {
+						Text(convertNSColorToHex(color: pickedColor.color))
+							.font(.largeTitle)
+							.fontWeight(.semibold)
+							.multilineTextAlignment(.center)
+							.frame(width: 250, height: 180)
+							.foregroundColor(.white)
+							.zIndex(3)
+						Image(nsImage: #imageLiteral(resourceName: "Shape"))
+							.zIndex(2)
+						ZStack(alignment: .topTrailing) {
+							ZStack(alignment: .bottomLeading) {
+								RoundedRectangle(cornerRadius: 12, style: .continuous)
+									.frame(width: 250, height: 180)
+									.foregroundColor(Color(pickedColor.color))
+									.zIndex(1)
+								Button(action: showMoreMenu) {
+									Image(nsImage: #imageLiteral(resourceName: "btn_plus"))
+								}
+								.buttonStyle(PlainButtonStyle())
+								.zIndex(4)
+								.padding([.leading, .bottom], 8)
+							}
+							Button(action: closeApp) {
+								Image(nsImage: #imageLiteral(resourceName: "btn_close"))
 							}
 							.buttonStyle(PlainButtonStyle())
 							.zIndex(4)
-							.padding([.leading, .bottom], 8)
+							.padding([.top, .trailing], 8)
 						}
-						Button(action: closeApp) {
-							Image(nsImage: #imageLiteral(resourceName: "btn_close"))
-						}
-						.buttonStyle(PlainButtonStyle())
-						.zIndex(4)
-						.padding([.top, .trailing], 8)
 					}
 				}
+				CopyButtonView()
 			}
-			Button(action: {
-				pasteboard.declareTypes([.string], owner: nil)
-				pasteboard.setString(convertNSColorToHex(color: self.pickedColor.color), forType: .string)
-			}) {
-				ZStack {
-					RoundedRectangle(cornerRadius: 29)
-						.foregroundColor(.white)
-						.frame(width:58, height:58)
-						//.shadow 추가할 것
-					Image(nsImage: #imageLiteral(resourceName: "icn_copy").tint(with: self.pickedColor.color))
-				}
-			}
-			.buttonStyle(PlainButtonStyle())
-			.zIndex(999)
+			SavedColorsView().environmentObject(saved9Colors)
 		}
 	}
 }
@@ -128,9 +202,17 @@ func showMoreMenu() {
 	
 }
 
+func copySavedColor(num: Int) {
+	pasteboard.declareTypes([.string], owner: nil)
+	pasteboard.setString(convertNSColorToHex(color: saved9Colors.colors[num-1]), forType: .string)
+}
 
-struct ContentView_Previews: PreviewProvider {
+func showMoreColors() {
+	
+}
+
+struct MainView_Previews: PreviewProvider {
 	static var previews: some View {
-		MainView().environmentObject(PickedColor())
+		SavedColorsView()
 	}
 }
