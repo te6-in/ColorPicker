@@ -1,11 +1,3 @@
-//
-//  MainView.swift
-//  ColorPicker
-//
-//  Created by 찬휘 on 9. 3..
-//  Copyright © 2020 주찬휘. All rights reserved.
-//
-
 import SwiftUI
 
 extension NSImage {
@@ -22,13 +14,15 @@ extension NSImage {
     }
 }
 
-class PickedColor: ObservableObject {
+//메인뷰에 보여주기 위함
+class NewColor: ObservableObject {
 	@Published var color: NSColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+	@Published var hex: String = "000000"
 }
 
 class Saved9Colors: ObservableObject {
 	@Published var colors: [NSColor] = [#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)]
-	@Published var isAvailable: [Bool] = [false, false, false, false, false, false, false, false, false, ]
+	@Published var isAvailable: [Bool] = [false, false, false, false, false, false, false, false, false]
 }
 
 struct SavedSingleColor: View {
@@ -123,18 +117,18 @@ struct SavedColorsView: View {
 }
 
 struct CopyButtonView: View {
-	@EnvironmentObject var pickedColor: PickedColor
+	@EnvironmentObject var newColor: NewColor
 	var body: some View {
 		Button(action: {
-			pasteboard.declareTypes([.string], owner: nil)
-			pasteboard.setString(convertNSColorToHex(color: self.pickedColor.color), forType: .string)
+			clipBoard.declareTypes([.string], owner: nil)
+			clipBoard.setString(newColor.hex, forType: .string)
 		}) {
 			ZStack {
 				RoundedRectangle(cornerRadius: 29)
 					.foregroundColor(.white)
 					.frame(width:58, height:58)
 					//.shadow 추가할 것
-				Image(nsImage: #imageLiteral(resourceName: "icn_copy").tint(with: self.pickedColor.color))
+				Image(nsImage: #imageLiteral(resourceName: "icn_copy").tint(with: self.newColor.color))
 			}
 		}
 		.buttonStyle(PlainButtonStyle())
@@ -144,7 +138,7 @@ struct CopyButtonView: View {
 
 struct MainView: View {
 	
-	@EnvironmentObject var pickedColor: PickedColor
+	@EnvironmentObject var newColor: NewColor
 	@State var showMore: Bool = false
 	
 	var body: some View {
@@ -156,7 +150,7 @@ struct MainView: View {
 						.opacity(0)
 						.zIndex(0)
 					ZStack(alignment: .topLeading) {
-						Text(convertNSColorToHex(color: pickedColor.color))
+						Text(newColor.hex)
 							.font(.largeTitle)
 							.fontWeight(.semibold)
 							.multilineTextAlignment(.center)
@@ -169,7 +163,7 @@ struct MainView: View {
 							ZStack(alignment: .bottomLeading) {
 								RoundedRectangle(cornerRadius: 12, style: .continuous)
 									.frame(width: 250, height: 180)
-									.foregroundColor(Color(pickedColor.color))
+									.foregroundColor(Color(newColor.color))
 									.zIndex(1)
 								Button(action: { self.showMore.toggle() }) {
 									Image(nsImage: #imageLiteral(resourceName: "btn_plus"))
@@ -193,11 +187,5 @@ struct MainView: View {
 				SavedColorsView().environmentObject(saved9Colors)
 			}
 		}
-	}
-}
-
-struct MainView_Previews: PreviewProvider {
-	static var previews: some View {
-		SavedColorsView()
 	}
 }

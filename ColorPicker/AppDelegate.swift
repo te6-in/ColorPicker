@@ -1,75 +1,84 @@
-//
-//  AppDelegate.swift
-//  ColorPicker
-//
-//  Created by 찬휘 on 9. 3..
-//  Copyright © 2020 주찬휘. All rights reserved.
-//
-
 import SwiftUI
 import HotKey
 
 //config
-
 let alwaysListenToMouseMovements = false
 
 let getHotKey = HotKey(key: .g, modifiers: [.command, .option])
 let copyHotKey = HotKey(key: .c, modifiers: [.command, .option])
-
 //
 
-let pasteboard = NSPasteboard.general
-let colorCode = PickedColor()
+let clipBoard = NSPasteboard.general
+let newColor = NewColor()
 let saved9Colors = Saved9Colors()
 
-var savedColors: [NSColor] = []
-var colorChart: [colorInfo] = []
+struct ColorInfo {
+	var hex: String
+	var color: NSColor
+}
 
-//json
-struct colorInfo: Codable {
-	var index: UInt
+struct JSONColorInfo: Codable, Identifiable {
+	var id = UUID()
+	var index: Int
 	var hex: String
 //	var memo: String
 }
 
+var colorInfoChart: [ColorInfo] = []
+
 @NSApplicationMain class AppDelegate: NSObject, NSApplicationDelegate {
 
-	var window: NSWindow!
+	var mainWindow: NSWindow!
+//	var savedColorsListWindow: NSWindow!
 	
 	func applicationWillFinishLaunching(_ notification: Notification) {
-		colorCode.color = getColor()
+		newColor.color = getColor()
+		newColor.hex = convertNSColorToHex(color: newColor.color)
 	}
 	
 	func applicationDidFinishLaunching(_ aNotification: Notification) {
-		// Create the SwiftUI view that provides the window contents.
-		let contentView = MainView()
+		
+		//메인뷰
+		let mainView = MainView()
 
-		// Create the window and set the content view.
-		window = NSWindow(
+		mainWindow = NSWindow(
 		    contentRect: NSRect(x: 0, y: 0, width: 300, height: 250),
-			styleMask: [.titled, .closable, .miniaturizable, .fullSizeContentView],
+			styleMask: [.closable, .miniaturizable, .fullSizeContentView],
 			backing: .buffered, defer: false)
-		window.center()
+		mainWindow.center()
 		
-		window.contentView = NSHostingView(rootView: contentView.environmentObject(colorCode))
+		mainWindow.contentView = NSHostingView(rootView: mainView.environmentObject(newColor))
 		
-		window.makeKeyAndOrderFront(nil)
+		mainWindow.makeKeyAndOrderFront(nil)
 		
-		window.styleMask.remove(.titled)
-		window.isMovableByWindowBackground = true
-		window.backgroundColor = .clear
-		window.appearance = NSAppearance(named: .aqua)
+		mainWindow.isMovableByWindowBackground = true
+		mainWindow.backgroundColor = .clear
+		mainWindow.appearance = NSAppearance(named: .aqua)
 
+		//SCL뷰
+//		let savedColorsListView = SavedColorsListView()
+//
+//		savedColorsListWindow = NSWindow(
+//			contentRect: NSRect(x: 0, y: 0, width: 300, height: 250),
+//			styleMask: [.titled, .closable, .miniaturizable],
+//			backing: .buffered, defer: false)
+//
+//		savedColorsListWindow.contentView = NSHostingView(rootView: savedColorsListView.environmentObject(colorChart))
+//
+//		savedColorsListWindow.makeKeyAndOrderFront(nil)
+//
+//
+		//json
 		let encoder = JSONEncoder()
 		encoder.outputFormatting = .prettyPrinted
 		
 		if alwaysListenToMouseMovements == true {
 			NSEvent.addLocalMonitorForEvents(matching: [.mouseMoved]) {
-				colorCode.color = getColor()
+				newColor.color = getColor()
 				return $0
 			}
 			NSEvent.addGlobalMonitorForEvents(matching: [.mouseMoved]) { _ in
-				colorCode.color = getColor()
+				newColor.color = getColor()
 			}
 		}
 		
@@ -77,46 +86,55 @@ struct colorInfo: Codable {
 			getHotKey.keyDownHandler = {
 				
 				//색상 추출하여 저장
-				let color = getColor()
-				colorCode.color = color
-				savedColors.append(color)
-				colorChart.append(colorInfo(index: UInt(savedColors.count - 1), hex: convertNSColorToHex(color: color)))
+				newColor.color = getColor()
+				newColor.hex = convertNSColorToHex(color: newColor.color)
 				
-				//저장한 colorchart json으로 encode
-				let jsonData = try? encoder.encode(colorChart)
-				let jsonString = String(data: jsonData!, encoding: .utf8)
+				let newColorInfo: ColorInfo = ColorInfo(hex: newColor.hex, color: newColor.color)
+				colorInfoChart.append(newColorInfo)
+				
+				//저장한 colorInfoChart json으로 encode
+//				let jsonData = try? encoder.encode(JSONColorInfo)
+//				let jsonString = String(data: jsonData!, encoding: .utf8)
+				
+//				print(jsonString!)
+				
 				
 				//SavedColors 표시
 				
 				//채우는중
-				if savedColors.count <= 9 {
+				if colorInfoChart.count <= 9 {
 					//isAvailable
-					saved9Colors.isAvailable[savedColors.count-1] = true
+					saved9Colors.isAvailable[colorInfoChart.count-1] = true
+					let reversedColorInfoChart: Array = colorInfoChart.reversed()
+					for i in 0...reversedColorInfoChart.count-1 {
+						saved9Colors.colors[i] = reversedColorInfoChart[i].color
+					}
 					
-					//color
-					saved9Colors.colors = savedColors.reversed()
-					if savedColors.count == 9 {
-					} else {
-						for _ in 1...(9-savedColors.count) {
+					if colorInfoChart.count < 9 {
+						for _ in 1...(9-colorInfoChart.count) {
 							saved9Colors.colors.append(#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1))
 						}
 					}
-				}
 					
+				}
+				
 				//채움
 				else {
 					//isAvailable
 					//이미 [true, true, true, true, true, true, true, true, true]
 					
 					//color
-					saved9Colors.colors = Array(savedColors.reversed()[0...8])
+					let reversedColorInfoChart: Array = colorInfoChart.reversed()
+					for i in 0...8 {
+						saved9Colors.colors[i] = reversedColorInfoChart[i].color
+					}
 				}
 			}
 		}
 		
 		copyHotKey.keyDownHandler = {
-			pasteboard.declareTypes([.string], owner: nil)
-			pasteboard.setString(convertNSColorToHex(color: colorCode.color), forType: .string)
+			clipBoard.declareTypes([.string], owner: nil)
+			clipBoard.setString(convertNSColorToHex(color: newColor.color), forType: .string)
 		}
 	}
 
@@ -149,8 +167,8 @@ func closeApp() {
 }
 
 func copySavedColor(num: Int) {
-	pasteboard.declareTypes([.string], owner: nil)
-	pasteboard.setString(convertNSColorToHex(color: saved9Colors.colors[num]), forType: .string)
+	clipBoard.declareTypes([.string], owner: nil)
+	clipBoard.setString(convertNSColorToHex(color: saved9Colors.colors[num]), forType: .string)
 }
 
 func showMoreColors() {

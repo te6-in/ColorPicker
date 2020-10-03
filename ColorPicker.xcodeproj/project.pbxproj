@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FF45CDAC250F9B5A000E0D84 /* SavedColorsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF45CDAB250F9B5A000E0D84 /* SavedColorsView.swift */; };
 		FF617854250421FA00CD636B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF617853250421FA00CD636B /* AppDelegate.swift */; };
 		FF617856250421FA00CD636B /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF617855250421FA00CD636B /* MainView.swift */; };
 		FF617858250421FC00CD636B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FF617857250421FC00CD636B /* Assets.xcassets */; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FF45CDAB250F9B5A000E0D84 /* SavedColorsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedColorsView.swift; sourceTree = "<group>"; };
 		FF617850250421FA00CD636B /* ColorPicker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ColorPicker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF617853250421FA00CD636B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FF617855250421FA00CD636B /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
@@ -58,6 +60,7 @@
 			isa = PBXGroup;
 			children = (
 				FF617853250421FA00CD636B /* AppDelegate.swift */,
+				FF45CDAB250F9B5A000E0D84 /* SavedColorsView.swift */,
 				FF617855250421FA00CD636B /* MainView.swift */,
 				FF617857250421FC00CD636B /* Assets.xcassets */,
 				FF61785C250421FC00CD636B /* Main.storyboard */,
@@ -106,7 +109,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1170;
-				LastUpgradeCheck = 1170;
+				LastUpgradeCheck = 1200;
 				ORGANIZATIONNAME = "주찬휘";
 				TargetAttributes = {
 					FF61784F250421FA00CD636B = {
@@ -155,6 +158,7 @@
 			files = (
 				FF617856250421FA00CD636B /* MainView.swift in Sources */,
 				FF617854250421FA00CD636B /* AppDelegate.swift in Sources */,
+				FF45CDAC250F9B5A000E0D84 /* SavedColorsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -198,6 +202,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -258,6 +263,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
