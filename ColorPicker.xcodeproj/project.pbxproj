@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		FF45CDAC250F9B5A000E0D84 /* SavedColorsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF45CDAB250F9B5A000E0D84 /* SavedColorsView.swift */; };
+		FF45CDAC250F9B5A000E0D84 /* DetailedColorsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF45CDAB250F9B5A000E0D84 /* DetailedColorsView.swift */; };
 		FF617854250421FA00CD636B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF617853250421FA00CD636B /* AppDelegate.swift */; };
 		FF617856250421FA00CD636B /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF617855250421FA00CD636B /* MainView.swift */; };
 		FF617858250421FC00CD636B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FF617857250421FC00CD636B /* Assets.xcassets */; };
@@ -17,7 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		FF45CDAB250F9B5A000E0D84 /* SavedColorsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedColorsView.swift; sourceTree = "<group>"; };
+		FF45CDAB250F9B5A000E0D84 /* DetailedColorsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedColorsView.swift; sourceTree = "<group>"; };
 		FF617850250421FA00CD636B /* ColorPicker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ColorPicker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF617853250421FA00CD636B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FF617855250421FA00CD636B /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
@@ -60,7 +60,7 @@
 			isa = PBXGroup;
 			children = (
 				FF617853250421FA00CD636B /* AppDelegate.swift */,
-				FF45CDAB250F9B5A000E0D84 /* SavedColorsView.swift */,
+				FF45CDAB250F9B5A000E0D84 /* DetailedColorsView.swift */,
 				FF617855250421FA00CD636B /* MainView.swift */,
 				FF617857250421FC00CD636B /* Assets.xcassets */,
 				FF61785C250421FC00CD636B /* Main.storyboard */,
@@ -158,7 +158,7 @@
 			files = (
 				FF617856250421FA00CD636B /* MainView.swift in Sources */,
 				FF617854250421FA00CD636B /* AppDelegate.swift in Sources */,
-				FF45CDAC250F9B5A000E0D84 /* SavedColorsView.swift in Sources */,
+				FF45CDAC250F9B5A000E0D84 /* DetailedColorsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

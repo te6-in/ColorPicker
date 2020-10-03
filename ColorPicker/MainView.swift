@@ -19,7 +19,7 @@ class NewColor: ObservableObject {
 	@Published var color: NSColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 	@Published var hex: String = "000000"
 }
-
+//SavedColorsView에 보여주기 위함
 class Saved9Colors: ObservableObject {
 	@Published var colors: [NSColor] = [#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)]
 	@Published var isAvailable: [Bool] = [false, false, false, false, false, false, false, false, false]
